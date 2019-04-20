@@ -12,7 +12,7 @@ describe("server.js", () => {
     it("should return 200 when posting a game correctly", () => {
       return request(server)
         .post("/games")
-        .send({ title: "test", genre: "test", releaseYear:'1902' })
+        .send({ title: "test", genre: "test", releaseYear:"1902" })
         .expect(200);
     });
 
@@ -39,7 +39,7 @@ describe("server.js", () => {
       const game = {
         title: "test",
         genre: "test",
-        releaseYear: 2013
+        releaseYear: "2013"
       };
 
       await Games.insert(game);
