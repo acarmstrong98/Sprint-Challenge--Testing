@@ -1,43 +1,46 @@
 const express = require("express");
-const Games = require("./games");
 
 const server = express();
 
-server.use(express.json());
+ server.use(express.json());
 
-server.get("/", (req, res) => {
-  res.send(`<h1>Hello World</h1>`);
+ module.exports = server;
+
+ server.get('/', async (req, res) => {
+  res.status(200).json({ api: 'up' });
 });
 
-server.get("/games", async (req, res) => {
-  try {
-    const games = await Games.getAll();
+let games = [
+  {
+      title: 'Pacman',
+      genre: 'Arcade',
+      releaseYear: 1980
+  },
+  {
+      title: 'World of Warcraft',
+      genre: 'RPG',
+      releaseYear: 2004
+  },
+  {
+      title: 'Tropico 5',
+      genre: 'CMS',
+      releaseYear: 2014
+  }
+];
 
-    res.status(200).json(games);
-  } 
-  
-  catch (error) {
-    res.status(500).json({ error });
+server.get('/games', (req, res) => {
+  res.status(200)
+    .json(games);
+})
+
+server.post('/games', (req, res) => {
+  let {title, genre} = req.body;
+  // check for required fields
+  if (title && genre){
+		res.status(201).json(req.body);
+  }else{
+    res
+    .status(422)
+    .json({message : "Missing Info"});
   }
 });
-
-server.post("/games", async (req, res) => {
-  const { title, genre } = req.body;
-
-  if (!title || !genre) {
-    return res.status(422).json({ message: "Please supply the correct information" });
-  }
-
-  try {
-    const games = await Games.insert(req.body);
-
-    res.status(200).json(games);
-  } 
-  
-  catch (error) {
-    console.log(error);
-    res.status(500).json({ error });
-  }
-});
-
-module.exports = server; 
